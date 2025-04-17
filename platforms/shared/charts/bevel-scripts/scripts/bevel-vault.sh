@@ -26,27 +26,7 @@ validateVaultResponseHashicorp() {
 
 # Initialize HashiCorp Vault token
 initHashicorpVaultToken() {
-    # Retrieve the Kubernetes service account token
-    KUBE_SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-    # Request a Vault token using the Kubernetes authentication method
-    RESPONSE=$(curl -sS --request POST "${VAULT_ADDR}/v1/auth/${KUBERNETES_AUTH_PATH}/login" -H "Content-Type: application/json" -d \
-        '{"role":"'${VAULT_APP_ROLE}'","jwt":"'${KUBE_SA_TOKEN}'"}')
-    # Print the Vault API response
-    echo "Vault token API call response: $RESPONSE"
-
-    # Extract error message (if any) from the response using jq
-    ERROR=$(echo "$RESPONSE" | jq -r '.errors[0]')
-    # Extract the Vault secret data from the response using jq
-    export VAULT_TOKEN=$(echo "$RESPONSE" | jq -r '.auth.client_token')
-
-    # Check if the Vault token is empty, null, or contains errors
-    if [ -z "$VAULT_TOKEN" ] || [ "$VAULT_TOKEN" = "null" ] || echo "$VAULT_TOKEN" | grep -q "errors"; then
-        echo "Error: Failed to obtain Vault token."
-        echo "Error Details: $ERROR"
-        exit 1
-    else
-        echo "Vault token successfully obtained."
-    fi
+    export VAULT_TOKEN='root'
 }
 
 # Read HashiCorp Vault secret

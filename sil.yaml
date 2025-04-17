@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: carrier-net
+  name: vault-access-role
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+- apiGroups: ["authentication.k8s.io"]
+  resources: ["serviceaccounts"]
+  verbs: ["get", "list"]
+- apiGroups: ["vault.hashicorp.com"]
+  resources: ["secrets"]
+  verbs: ["get", "list", "create"]
